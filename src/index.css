@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ai-bg: #1e1e1e;
+  --color-ai-text: #dcdcdc;
+  --color-accent: #fbbf24;
+}
+
+body, html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.ai-markdown {
+  line-height: 1.6;
+  font-size: 0.95rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.ai-markdown h1, 
+.ai-markdown h2, 
+.ai-markdown h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: currentColor;
+}
+
+.ai-markdown ul, 
+.ai-markdown ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ai-markdown li {
+  margin-bottom: 0.5rem;
+}
+
+.ai-markdown pre {
+  background-color: var(--color-ai-bg);
+  color: var(--color-ai-text);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  font-family: 'Fira Code', ui-monospace, monospace;
+  overflow-x: auto; 
+  max-width: 100%;
+  display: block;
+  white-space: pre;
+}
+
+.ai-markdown code {
+  background-color: rgba(243, 244, 246, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.ai-markdown pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.85rem;
+  word-break: normal;
+}
+
+.ai-markdown pre::-webkit-scrollbar {
+  height: 4px;
+}
+
+.ai-markdown pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.chat-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-body::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 10px;
+}
+
+.chat-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+body {
+  @apply antialiased bg-slate-950;
+}
