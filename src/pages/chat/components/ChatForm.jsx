@@ -1,14 +1,22 @@
 import React, { useRef, useState } from "react";
-import { getGeminiResponse } from "./../../../utils/gemini";
+import { groqResponse } from "./../../../utils/groq";
 
 const ChatForm = ({ setChatHistory }) => {
   const inputRef = useRef();
   const [isTyping, setIsTyping] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const userMessage = inputRef.current.value.trim();
-    if (!userMessage || isTyping) return;
+
+    if (!userMessage || isTyping) {
+      if (!userMessage) {
+        setIsError(true);
+        setTimeout(() => setIsError(false), 600);
+      }
+      return;
+    }
 
     inputRef.current.value = "";
     setIsTyping(true);
@@ -20,35 +28,41 @@ const ChatForm = ({ setChatHistory }) => {
     ]);
 
     try {
-      // API Call
-      const reply = await getGeminiResponse(userMessage);
+      const reply = await groqResponse(userMessage);
 
-      setChatHistory((prev) =>
-        prev.map((msg, index) =>
-          index === prev.length - 1 ? { ...msg, text: reply } : msg,
-        ),
-      );
+      setChatHistory((prev) => {
+        const newHistory = [...prev];
+        if (newHistory.length > 0) {
+          newHistory[newHistory.length - 1] = {
+            ...newHistory[newHistory.length - 1],
+            text: reply,
+          };
+        }
+        return newHistory;
+      });
     } catch (error) {
       let errorMessage = "Error: Deck is offline.";
 
-      //Internet Check
       if (!navigator.onLine) {
         errorMessage = "No internet connection. Check your Wi-Fi!";
-      }
-      // API Response Check
-      else if (error.message && error.message.includes("429")) {
+      } else if (error.message && error.message.includes("429")) {
         errorMessage = "Too many requests. Please slow down!";
       }
 
-      setChatHistory((prev) =>
-        prev.map((msg, index) =>
-          index === prev.length - 1
-            ? { ...msg, text: errorMessage, isError: true }
-            : msg,
-        ),
-      );
+      setChatHistory((prev) => {
+        const newHistory = [...prev];
+        if (newHistory.length > 0) {
+          newHistory[newHistory.length - 1] = {
+            ...newHistory[newHistory.length - 1],
+            text: errorMessage,
+            isError: true,
+          };
+        }
+        return newHistory;
+      });
     } finally {
       setIsTyping(false);
+      setTimeout(() => inputRef.current?.focus(), 10);
     }
   };
 
@@ -56,9 +70,11 @@ const ChatForm = ({ setChatHistory }) => {
     <form
       onSubmit={handleFormSubmit}
       className={`chat-form flex items-center gap-2 bg-[#1e293b] border rounded-2xl px-3 md:px-4 py-2 md:py-3 transition-all duration-300 ${
-        isTyping
-          ? "border-white/5 opacity-80 cursor-not-allowed"
-          : "border-white/10 focus-within:border-amber-400"
+        isError
+          ? "border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]"
+          : isTyping
+            ? "border-white/5 opacity-80 cursor-not-allowed"
+            : "border-white/10 focus-within:border-amber-400"
       }`}
     >
       <input
@@ -69,18 +85,17 @@ const ChatForm = ({ setChatHistory }) => {
           isTyping ? "Deck is processing..." : "Ask CatDeck anything..."
         }
         className="message-input bg-transparent flex-1 outline-none text-white placeholder-gray-500 text-sm disabled:cursor-not-allowed"
-        required
       />
 
       <div className="flex items-center gap-2">
-        {/* DELETE BUTTON */}
         {!isTyping && (
           <button
             type="button"
             onClick={() => {
-              setChatHistory([]);
-              localStorage.removeItem("chat");
-              localStorage.removeItem("chatHistory");
+              if (window.confirm("Clear all chat history?")) {
+                setChatHistory([]);
+                localStorage.removeItem("chatHistory");
+              }
             }}
             className="material-symbols-rounded h-8 w-8 flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-white/5 rounded-full transition cursor-pointer"
           >
