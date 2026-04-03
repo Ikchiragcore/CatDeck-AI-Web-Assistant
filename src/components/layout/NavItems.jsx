@@ -3,10 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 
 const NavItems = () => {
   const location = useLocation();
-  const links = [
-    { name: "Home", path: "/" },
-    { name: "Work", path: "#", external: true },
-  ];
 
   const getLinkClass = (isActive) => `
         px-3 md:px-5 
@@ -47,9 +43,26 @@ const NavItems = () => {
                 <span className="text-accent">Groq API (Llama 3.3)</span>.
               </p>
               <p>
-                This project is a dedicated effort to simplify web development
-                workflows while showcasing my modern technical skillset and
-                portfolio practices.
+                This project is a collaborative &amp; dedicated effort of{" "}
+                <a
+                  href="https://www.linkedin.com/in/chirag-in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-amber-400 underline underline-offset-4"
+                >
+                  Chirag
+                </a>{" "}
+                &amp;{" "}
+                <a
+                  href="https://www.linkedin.com/in/withharshit/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-amber-400 underline underline-offset-4"
+                >
+                  Harshit
+                </a>{" "}
+                to simplify web development workflows while showcasing our
+                forward looking technical skillset and portfolio practices.
               </p>
             </div>
             <div className="space-y-1.5 border-t border-white/5 pt-3">
@@ -65,13 +78,12 @@ const NavItems = () => {
 
       {/*RIGHT SIDE*/}
       <a
-        href={links[1].path}
+        href="https://chirag-portfolio-hazel-nine.vercel.app/"
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => e.preventDefault()}
         className={getLinkClass(false)}
       >
-        {links[1].name}
+        Work
       </a>
 
       {/*CONTACT WITH DROPDOWN */}
